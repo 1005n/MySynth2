@@ -1,0 +1,45 @@
+#include "MainComponent.h"
+
+MainComponent::MainComponent()
+	:keyboredComponent(keyboardState, juce::MidikKeyboardComponent::horizontalKeyboard
+			{
+			addAndMakeVisible(keyboardComponent);
+
+
+			for (int i = 0;i < 4; ++i)
+			synth.addVoice(new juce::SynthesizerVoice());
+
+			synth.addSound(new juce::SynthesizerSound());
+
+			setsize(600,400);
+			setAudioChannels (0,2);
+			}
+
+MainComponent::~MainComponent()
+{
+              shutdownAudio();
+	    }
+
+void MainComponent::prepareToPlay(int samplesPerBlockExpected,double sampleRate)
+{
+	synth.setCurrentPlaybackSampleRate(sampleRate);
+}
+
+void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
+{
+	bufferToFill.cleanActiveBufferRegion();
+
+	juce::Midibuffer midiMessages;
+	keyboardState.procesNextMidiBuffer(midiMessages,bufferToFill.startSample,bufferToFill.numSamples, true);
+
+	synth.renderNextBlock(*bufferToFill.buffer,midiMessages,bufferToFill.startSample,bufferToFill.numSamples);
+}
+
+void MainComponent::releaseResources()
+{
+}
+
+void MainComponent::resized()
+{
+	keyboardComponent.setBounds(10,getHeight() -80,getWidth() -20,70);
+}

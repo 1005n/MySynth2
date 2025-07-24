@@ -1,0 +1,95 @@
+#include "PluginProcessor.h"
+#include "PluginEditor.h"
+
+MySynthAudioProcessor::MySynthAudioProcessor()
+	    : AudioProcessor(BusesProperties().withOutput("Output", juce::AudioChannelSet::stereo(), true))
+{
+}
+
+MySynthAudioProcessor::~MySynthAudioProcessor() {}
+
+void MySynthAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+{
+}
+
+void MySynthAudioProcessor::releaseResources() {}
+
+void MySynthAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+{
+	    buffer.clear();
+}
+
+juce::AudioProcessorEditor* MySynthAudioProcessor::createEditor()
+{
+	    return new MySynthAudioProcessorEditor(*this);
+}
+
+bool MySynthAudioProcessor::hasEditor() const { return true; }
+
+const juce::String MySynthAudioProcessor::getName() const { return "MySynth"; }
+
+juce::AudioProcessor* createPluginFilter()
+{
+	return new MySynthAudioProcessor();
+}
+double MySynthAudioProcessor::getTailLengthSeconds() const
+
+{
+	return 0.0;
+}
+bool MySynthAudioProcessor::acceptsMidi() const
+{
+	return true;
+}
+bool MySynthAudioProcessor::producesMidi() const
+{
+	return false;
+}
+int MySynthAudioProcessor::getNumPrograms()
+{
+	return 1;
+}
+
+int MySynthAudioProcessor::getCurrentProgram()
+{
+	return 0;
+}
+void MySynthAudioProcessor::setCurrentProgram(int index)
+{
+}
+
+const juce::String MySynthAudioProcessor::getProgramName(int index)
+{
+	return "Default";
+}
+
+void MySynthAudioProcessor::changeProgramName(int index,const juce::String& newName)
+{
+}
+
+void MySynthAudioProcessor::getStateInformation(juce::MemoryBlock& destData)
+{
+}
+
+void MySynthAudioProcessor::setStateInformation(const void* data,int sizeInBytes)
+{
+}
+
+/*class MySynthAudioProcessor : public juce::AudioProcessor
+{
+	public:
+		    MySynthAudioProcessor();
+		        ~MySynthAudioProcessor() override;
+
+			    void prepareToPlay(double sampleRate, int samplesPerBlock) override;
+			        void releaseResources() override;
+				    void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+
+				        juce::AudioProcessorEditor* createEditor() override;
+					    bool hasEditor() const override;
+					        const juce::String getName() const override;
+
+	private:
+						    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MySynthAudioProcessor)
+};*/
+
