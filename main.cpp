@@ -11,8 +11,15 @@ public:
             juce::DocumentWindow::allButtons)
     {
         setUsingNativeTitleBar(true);
-        setContentOwned(new MainComponent(), true);
-        centreWithSize(getWidth(), getHeight());
+
+        // MainComponent を生成
+        auto* mainComponent = new MainComponent();
+
+        // ウィンドウサイズを明示的に設定（例：600x400）
+        setContentOwned(mainComponent, true);
+        setResizable(true, false);
+        centreWithSize(600, 400);
+
         setVisible(true);
     }
 
@@ -21,6 +28,7 @@ public:
         juce::JUCEApplicationBase::quit();
     }
 };
+
 
 class MyApplication : public juce::JUCEApplication
 {

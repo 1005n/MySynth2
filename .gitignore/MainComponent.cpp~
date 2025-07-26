@@ -1,5 +1,5 @@
 #include "MainComponent.h"
-#include "WaveVoice.h"
+#include "SineWaveVoice.h"
 #include "SineWaveSound.h"
 
 //==============================================================================
@@ -32,25 +32,6 @@ MainComponent::MainComponent()
     pitchLabel.setText("Pitch", juce::dontSendNotification);
     addAndMakeVisible(pitchLabel);
 
-// 波形選択 ComboBox の初期化
-waveSelector.addItem("Sine", 1);
-waveSelector.addItem("Square", 2);
-waveSelector.addItem("Saw", 3);
-waveSelector.setSelectedId(1);
-
-// 選択が変わったら波形IDを更新
-waveSelector.onChange = [this]()
-{
-    waveformId = waveSelector.getSelectedId(); // waveformId もメンバ変数として宣言しておく
-};
-
-// 表示用
-addAndMakeVisible(waveSelector);
-synth.clearSounds(); // 念のため前の Sound をクリア
-synth.addSound(new SineWaveSound());
-
-
-
     // シンセサイザー初期化
     for (int i = 0; i < 4; ++i)
 {
@@ -68,6 +49,22 @@ MainComponent::~MainComponent()
     shutdownAudio();
 }
 
+waveSelector.addItem("Sine", 1);
+waveSelector.addItem("Square", 2);
+waveSelector.addItem("Triangle", 3);
+waveSelector.addItem("Saw", 4);
+waveSelector.setSelectedId(1);
+
+waveSelector.onChange = [this]()
+{
+    WaveType selected = static_cast<WaveType>(waveSelector.getSelectedId() - 1);
+    for (int i = 0; i < synth.getNumVoices(); ++i)
+        if (auto* voice = dynamic_cast<WaveVoice*>(synth.getVoice(i)))
+            voice->setWaveType(selected);
+};
+
+addAndMakeVisible(waveSelector);
+
 
 //==============================================================================
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
@@ -82,14 +79,6 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer
 
     juce::MidiBuffer incomingMidi;
     keyboardState.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
-
- for (int i = 0; i < synth.getNumVoices(); ++i)
-    {
-        if (auto* waveVoice = dynamic_cast<WaveVoice*>(synth.getVoice(i)))
-        {
-            waveVoice->setWaveType(static_cast<WaveType>(waveformId));
-        }
-    }
 
     // スライダーの音量を反映
     float gain = (float)volumeSlider.getValue();

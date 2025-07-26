@@ -1,7 +1,6 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "WaveVoice.h"
 
 class MainComponent  : public juce::AudioAppComponent
 {
@@ -34,10 +33,6 @@ private:
     // サンプルレートとピッチ
     double currentSampleRate = 44100.0;
     double pitchShiftSemitones = 0.0;
-
-    juce::ComboBox waveSelector;
-    int waveformId = 1; // 初期はサイン波
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
